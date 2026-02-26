@@ -1,0 +1,166 @@
+## Versie 2.1
+- **Verbeterd:** Mogelijkheden league manager bvijgewerkt
+
+## Versie 2.0
+- **New:** Full rework structuur core
+- **Debug:** Logs - pagina per onderdeel
+- **Verbeterd:** Event image generator - auto bij send event
+
+## Versie 1.25
+- **Fix:** Timerfuncties & auto score herwerkt
+- **Debug:** Logging verbeterd + testknop auto score
+- **Verbeterd:** Line-up en scores inclusief gele/rode kaarten
+- **Opgemaakt:** Crons halftime en end match verwijderd
+- **Opgemaakt:** Tablerows en prefix aangepast voor debug/stage
+
+## Versie 1.24
+- **Verbeterd:** Framework herzien & beveiligingsupdates
+- **Verbeterd:** Install check voor actieve core functies
+- **Opgemaakt:** Timeline CSS en logos mobielvriendelijk gemaakt
+- **Opgemaakt:** Admin backend & auto-update endpoint verbeterd
+
+## Versie 1.20
+- **Nieuw:** Live match timer met Start, Pauze, Hervat en Stop
+- **Nieuw:** Stopknop bevriest matchtijd en verwijdert Pauze/Hervat
+- **Nieuw:** Matchminuut via `paras_get_match_minute()`, inclusief pauzes
+- **Nieuw:** Substituten automatisch geregistreerd met live minuut
+- **Nieuw:** Shortcode `[sp_lineup_switcher]` aangepast voor live tijd
+- **Verbeterd:** Debug-logging uitgebreid voor start/pauze/stop
+- **Verbeterd:** AJAX-handling geoptimaliseerd met foutmeldingen
+- **Verbeterd:** Dubbele declaraties voorkomen met `function_exists()`
+- **Opgemaakt:** JS match control herzien en CSS gestandaardiseerd
+
+## Versie 1.19
+- **Nieuw:** Aanwezigheids- en line-up-lijsten volledig herzien — eerste 11 spelers met status `lineup` worden nu correct als BASIS weergegeven, spelers na de eerste 11 automatisch als ON-CALL.  
+- **Nieuw:** Substituten (`sub`) worden nu apart weergegeven onder WISSELS, ook als er geen eerste 11 ontbreekt.  
+- **Nieuw:** Aanwezigheidslijst ondersteunt nu scenario’s zonder subs — toont alle `lineup`-spelers in één lijst.  
+- **Verbeterd:** Behoudt originele volgorde van spelers uit `$sp_players` array om onjuiste sortering van BASIS en ON-CALL te voorkomen.  
+- **Verbeterd:** Debug-log toegevoegd bij ophalen van spelerslijst, zodat ID’s, namen en status zichtbaar zijn voor foutopsporing.  
+- **Verbeterd:** On-call-functie werkt nu consistent; spelers na de eerste 11 met `lineup` status worden correct toegewezen.  
+- **Opgemaakt:** Code voor het bouwen van secties (`BASIS`, `ON-CALL`, `WISSELS`) opgeschoond en overzichtelijker gemaakt met duidelijke if/else-structuren.  
+- **Opgemaakt:** Display van spelers met rugnummer (`#nummer | naam`) uniform toegepast op alle secties.
+
+## Versie 1.18
+- Nieuw: Naamsverandering van de addon wegens meerdere functies dan enkel Whatsapp ==> Core plugin FC De Paras
+- Nieuw: Uitgebreide controle op WhatsApp event-responses — vergelijkt nu `senderAlt` en `participant` met zowel `linkedin`- als `LIDwhatsapp`-velden voor maximale matchingbetrouwbaarheid.
+- Nieuw: Fallback-systeem toegevoegd voor alternatieve `senderAlt`-waarden bij gewijzigde of ontbrekende afzenderdata in inkomende payloads.
+- Nieuw: Logging van mislukte decrypties of onvolledige WAHA responses met duidelijke foutcodes in `error_log`.
+- Verbeterd: Builder-widget voor *Volgende Wedstrijd* toont geen PHP-foutmelding meer bij ontbrekende instellingen of teamcategorie.
+- Verbeterd: Admin-interface toont opnieuw correct de installatieknop voor verplichte addons via TGM addon Activatie.
+- Verbeterd: Herstructurering van webhook-verwerking — `participant`-lookup en meta-updates lopen nu synchroon om dubbele updates te voorkomen.
+- Verbeterd: Betere validatie van `sp_player`-meta om null-offsets in de Builder of Sport-functies te voorkomen.
+- Opgemaakt: Codeconsistentie in webhookhandler (`if/else`-structuren opgeschoond, duidelijke logging voor sender- en participantvergelijkingen).
+- Opgemaakt: Adminmenu en submenu’s herschikt zodat WhatsApp- en Sport-gerelateerde onderdelen logisch gegroepeerd blijven.
+
+## Versie 1.17
+- Nieuw: Tabstructuur voor aanwezigheidsoverzicht — eerste tab *Volgende Wedstrijd* (standaard opengeklapt), tweede tab *Alle Aanwezigheden* gesorteerd van nu tot later.
+- Nieuw: Cron-taken voor automatische score-updates — halftime na 45 minuten en tweede helft na 110 minuten (berekend als totaal minus eerste helft).
+- Nieuw: Automatische invulling van totaalscore bij tweede helft-update indien nog leeg.
+- Verbeterd: Directe verversing van postdata met `wp_update_post()` na score-updates.
+- Verbeterd: Opslag van `sp_results` voorzien van fallbackstructuur bij ontbrekende teams.
+- Verbeterd: Adminmenu-volgorde geforceerd zodat *Changelog* altijd als laatste wordt getoond.
+- Opgemaakt: Consistente code-indeling en duidelijke `error_log`-meldingen voor halve en tweede helft updates.
+
+## Versie 1.16
+- Nieuw: Dynamische weergave van `sp_calendar` — automatisch *Blocks* op mobiel en *List* op desktop/tablet.
+- Nieuw: Bij `sp_event` met `_sp_event_vriendschappelijk = 1` wordt competitie/seizoen vervangen door `_sp_event_type_voetbal` + label *Vriendschappelijk*.
+- Nieuw: Rode, afgeronde *Volgende*-knop met witte tekst voor DataTables-paginatie.
+- Verbeterd: League- en season-kolommen tonen nu veilig meta of termen met fallback bij ontbrekende data.
+- Opgemaakt: Consistente PHP-syntax om `unexpected ':'`-fouten te voorkomen.
+
+## Versie 1.15
+- Nieuw: Automatische generatie van Instagram-vriendelijke wedstrijdafbeeldingen met aangepaste achtergrond, teamlogo’s en dynamische tekst (titel, datum, tijd).
+- Nieuw: Extra tab op `sp_event`-pagina toont visuele opstelling via Soccer Formation VE, in-/uitschakelbaar via Sportspress-instellingen.
+- Nieuw: Elementor-widget toont het eerstvolgende event van een geselecteerd team, inclusief countdown, locatie, competitie-info en thumbnails.
+- Nieuw: Admins kunnen in de lineup-lijst basisspelers (`lineup`) wisselen met wisselspelers (`sub`) via inline dropdown-menu.
+- Nieuw: Automatisch genereren en/of overschrijven van opstellingen in Soccer Formation VE op basis van `sp_players` met status `lineup`.
+- Verbeterd: Volledige ondersteuning voor gebruik van `sp_players` in plaats van `sp_results` bij scoreverwerking en opstellingslogica.
+- Verbeterd: Debug logging uitgebreid met informatie over formatie-syncs, gegenereerde event-afbeeldingen en Elementor-query’s.
+- Verbeterd: `sp_players` wordt automatisch gesynchroniseerd en gesorteerd bij wijzigingen in lineup of tijdens formatiegeneratie.
+- Opgemaakt: Betere foutafhandeling bij ontbrekende of ongeldige metadata tijdens WhatsApp-verzending of formatie-export.
+
+## Versie 1.14
+- Nieuw: Automatisch goedkeuren van user scores direct bij frontend submit, geen extra klik meer nodig.
+- Nieuw: Ingevoerde spelersstatistieken worden direct in `sp_players` én `sp_timeline` opgeslagen.
+- Nieuw: Automatische berekening van minuten per actie op basis van wedstrijdstarttijd.
+- Verbeterd: Geen dubbele of achterblijvende `sp_user_scores` meer na submit.
+- Verbeterd: Debug logging toegevoegd voor volledige flow: submit → approve → opslaan → opschonen.
+- Opgemaakt: Betere structuur en foutafhandeling in de auto-approve handler.
+
+## Versie 1.13
+- Verbeterd: Webhook-handler robuuster gemaakt met betere foutafhandeling en validatie van inkomende payload.
+- Nieuw: Automatische logging van mislukte event-verwerkingen voor eenvoudiger debugging.
+- Toegevoegd: Ondersteuning voor meerdere deelnemer-identificaties naast `linkedin` (zoals e-mail of telefoonnummer).
+- Verbeterd: Optimalisatie van WP_Query’s in webhook voor snellere verwerking bij veel events.
+- Verbeterd: Frontend overzichtspagina van aanwezigheden aangepast met filter- en zoekmogelijkheden per event en speler.
+
+## Versie 1.12
+- Nieuw: Volledige **WAHA webhook handler** voor automatische verwerking van WhatsApp event-responses.
+- Nieuw: Automatische koppeling van inkomende events aan juiste **`sp_event`** via **`_whatsapp_event_id`** meta.
+- Verbeterd: Participantnummer (`@c.us`) wordt correct gelezen, ook als array of met haakjes.
+- Nieuw: Participant automatisch gekoppeld aan juiste **`sp_player`** via **`linkedin`** meta.
+- Verbeterd: Speler-ID wordt uniek toegevoegd in **`sp_player`** meta, vóór of na tweede nul afhankelijk van ploegvolgorde.
+- Verbeterd: Nul-markers (`0`) in **`sp_player`** meta blijven behouden voor THUIS- en UIT-ploeg.
+- Verbeterd: Bestaande **`sp_player`** meta wordt verwijderd en correct opnieuw opgebouwd.
+- Opgemaakt: Uitgebreide debug-logging voor payloads, gevonden ID’s, teamvolgorde en meta-updates.
+
+## Versie 1.11
+- Nieuw: Mogelijkheid om een **globaal WhatsApp-nummer** in te stellen voor handmatig verzenden van events.
+- Verbeterd: WP-Cron gebruikt nu automatisch het globale WhatsApp-nummer als fallback voor automatische verzending.
+- Opgemaakt: Extra inputveld in de instellingenpagina om het globale event-nummer in te stellen en op te slaan.
+
+## Versie 1.10
+- Toegevoegd: Kolom en checkbox in Events-overzicht die aangeeft of event al verzonden is.
+- Toegevoegd: Reset-knop per event om verzendstatus te wissen en opnieuw te kunnen verzenden.
+- Verzendstatus wordt nu ook handmatig beheerbaar via admin.
+
+## Versie 1.9
+- Changelog pagina verplaatst naar extern changelog.txt bestand.
+- Veiligheid en leesbaarheid changelog in admin verbeterd.
+
+## Versie 1.8
+- Automatische event-verzending via WP-Cron toegevoegd (5 dagen voor event).
+- Events-lijst gefilterd op toekomstige events of vandaag.
+- Handmatige cron-trigger in admin toegevoegd.
+- Instellingen uitgebreid met event verzenden aan/uit.
+- Bugfixes: dubbele verzending voorkomen, betere datumfiltering.
+
+## Versie 1.7
+- WhatsApp-bericht testfunctie toegevoegd in admin.
+- Instellingenpagina met host, chatId, tekst en sessie.
+- API-authenticatie verwerkt met Basic Auth.
+- Live score wijzigingen WhatsApp berichten mogelijk gemaakt.
+
+## Versie 1.6
+- Plugin menu en submenu structuur toegevoegd.
+- Basisfuncties voor WhatsApp berichten verzenden via eigen API.
+
+## Versie 1.5
+- Verbeterde instellingenpagina.
+- Betere foutafhandeling bij API responses.
+- Instellingen persistent gemaakt met WordPress opties.
+
+## Versie 1.4
+- Automatische WhatsApp berichten bij LIVE! score wijzigingen.
+- Schakeloptie toegevoegd voor aan/uitzetten van automatische berichten.
+
+## Versie 1.3
+- Eerste werkende versie met handmatige WhatsApp bericht verzending via admin menu.
+
+## Versie 1.2
+- Checkbox toegevoegd om WhatsApp-berichtverzending bij scorewijzigingen aan of uit te zetten.
+- Aparte opslaan-knop voor verzendinstellingen met bevestigingsmelding.
+- Fix: Opslaan van het uitvinken van de verzendoptie werkt nu correct.
+- Testbericht-verzending en automatische score-update verzending werken onafhankelijk van elkaar.
+- Melding na succesvol opslaan via redirect en query-parameter.
+
+## Versie 1.1
+- Automatisch WhatsApp-bericht verzenden bij update van een sp_event post (score-update).
+- Instellingen (host, chatId, tekst, sessie) opgeslagen en hergebruikt.
+- Gebruik van html_entity_decode om apostrof (') correct te tonen in berichten.
+
+## Versie 1.0
+- Start nieuwe plugin, verzenden van berichten via wordpress dmv whatsapp API.
+- Handmatige testpagina toegevoegd voor het versturen van WhatsApp-berichten via eigen API.
+- Formulier voor host, chatId, berichttekst en sessie met eenvoudige validatie.
+- Respons van API getoond in admin-interface.

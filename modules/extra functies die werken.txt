@@ -1,0 +1,131 @@
+
+// speler toevoegen aan alle posts voor de tegenstander, zie *** verderop als je wil toevoegen aan eigen team voor alle posts
+function update_sp_player_meta($event_id, $player_id, $our_team_id) {
+    // Haal alle sp_player meta als losse waarden op
+    $players = get_post_meta($event_id, 'sp_player', false);
+    $players_flat = [];
+
+    // Flatten de array (soms genest)
+    foreach ($players as $p) {
+        if (is_array($p)) {
+            $players_flat = array_merge($players_flat, $p);
+        } else {
+            $players_flat[] = $p;
+        }
+    }
+
+    // Verwijder lege waardes en trim stringwaardes
+    $players_flat = array_filter(array_map('trim', $players_flat), function($v) {
+        return $v !== '';
+    });
+
+    // Zorg dat er exact 2 nullen zijn
+    $zero_indices = array_keys($players_flat, '0');
+    if (count($zero_indices) < 2) {
+        // Voeg nullen toe indien nodig, voeg altijd op het einde toe
+        while (count($zero_indices) < 2) {
+            $players_flat[] = '0';
+            $zero_indices = array_keys($players_flat, '0');
+        }
+    } elseif (count($zero_indices) > 2) {
+        // Hou alleen eerste twee nullen, rest verwijderen
+        $first_two_nulls_found = 0;
+        $players_flat = array_filter($players_flat, function($v) use (&$first_two_nulls_found) {
+            if ($v === '0') {
+                $first_two_nulls_found++;
+                return $first_two_nulls_found <= 2;
+            }
+            return true;
+        });
+        // reset indices na filteren
+        $players_flat = array_values($players_flat);
+        $zero_indices = array_keys($players_flat, '0');
+    }
+
+    $first_zero = $zero_indices[0];
+    $second_zero = $zero_indices[1];
+
+    // Bepaal teampositie uit sp_team meta
+    $sp_teams = get_post_meta($event_id, 'sp_team', false);
+    $our_team_position = false;
+    if (is_array($sp_teams)) {
+        $teams = array_map('strval', $sp_teams);
+        $our_team_position = array_search(strval($our_team_id), $teams, true);
+        error_log("DEBUG: Onze team positie in sp_team: " . var_export($our_team_position, true));
+    } else {
+        error_log("DEBUG: sp_team is geen array of leeg voor event $event_id");
+    }
+
+    // Splits array op in 3 delen: vóór eerste nul, tussen eerste en tweede nul, na tweede nul
+    $before_first_zero = array_slice($players_flat, 0, $first_zero);
+    $between_zeros = array_slice($players_flat, $first_zero + 1, $second_zero - $first_zero - 1);
+    $after_second_zero = array_slice($players_flat, $second_zero + 1);
+
+    // Controleer of speler al ergens zit
+    if (in_array(strval($player_id), $before_first_zero, true) ||
+        in_array(strval($player_id), $between_zeros, true) ||
+        in_array(strval($player_id), $after_second_zero, true)) {
+        error_log("DEBUG: Speler $player_id zit al in sp_player voor event $event_id, niets toegevoegd.");
+        return;
+    }
+
+    // Voeg speler toe op juiste plek volgens teampositie ***
+if ($our_team_position === 1) {
+    // Team 0: speler hoort tussen de nullen
+    if (!in_array(strval($player_id), $between_zeros, true)) {
+        $between_zeros[] = strval($player_id);
+    }
+} elseif ($our_team_position === 0) {
+    // Team 1: speler hoort na tweede nul
+    if (!in_array(strval($player_id), $after_second_zero, true)) {
+        $after_second_zero[] = strval($player_id);
+    }
+} else {
+    // Onbekend team: speler toevoegen aan einde
+    if (!in_array(strval($player_id), $after_second_zero, true)) {
+        $after_second_zero[] = strval($player_id);
+    }
+}
+
+
+    // Bouw de array opnieuw op met 2 nullen op originele plekken
+    $new_players = array_merge(
+        $before_first_zero,
+        ['0'],
+        $between_zeros,
+        ['0'],
+        $after_second_zero
+    );
+
+    error_log("DEBUG: Nieuwe sp_player lijst voor event $event_id: " . print_r($new_players, true));
+
+    // Oude meta verwijderen en opnieuw toevoegen
+    delete_post_meta($event_id, 'sp_player');
+    foreach ($new_players as $value) {
+        add_post_meta($event_id, 'sp_player', $value);
+    }
+
+    error_log("DEBUG: Speler $player_id toegevoegd aan event $event_id");
+}
+
+// voeg spelers toe aan events
+add_action('init', function() {
+    if (!is_user_logged_in() || !current_user_can('manage_options') || !is_admin()) {
+        return;
+    }
+
+    $player_id = 5406;
+    $our_team_id = Waha_Options::get_team_id();
+
+    $events = get_posts([
+        'post_type' => 'sp_event',
+        'posts_per_page' => -1,
+        'post_status' => ['publish', 'future', 'draft', 'private'],
+        'fields' => 'ids',
+    ]);
+
+    foreach ($events as $event_id) {
+        update_sp_player_meta($event_id, $player_id, $our_team_id);
+    }
+});
+
